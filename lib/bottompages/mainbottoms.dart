@@ -50,6 +50,7 @@ class _MainBottomState extends State<MainBottom> {
             label: '',
             backgroundColor: Colors.green),
         BottomNavigationBarItem(
+
             icon: Icon(
               Icons.add_circle,
               color: _pages == 2 ? Colors.green : Colors.black,

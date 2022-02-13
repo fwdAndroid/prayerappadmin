@@ -1,14 +1,35 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:prayerappadmin/BottomPagesclass/question.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:prayerappadmin/utils/constant.dart';
+import 'package:prayerappadmin/widgets/customdialog.dart';
+import 'package:uuid/uuid.dart';
 
 class AddTopic extends StatefulWidget {
-  const AddTopic({ Key? key }) : super(key: key);
+  const AddTopic({Key? key}) : super(key: key);
 
   @override
   _AddTopicState createState() => _AddTopicState();
 }
 
 class _AddTopicState extends State<AddTopic> {
+TextEditingController topicController=TextEditingController();
+  File? imageUrl;
+
+  String? imageLink;
+
+  final ImagePicker _picker = ImagePicker();
+
+  void addImage() async {
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    setState(() {
+      imageUrl = File(image!.path);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,29 +40,55 @@ class _AddTopicState extends State<AddTopic> {
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.green,
-        onPressed: (){
-          Navigator.push(context, MaterialPageRoute(builder: (builder) => Questions()));
-
-        },child: Icon(Icons.check,),),
+        onPressed: () {
+          if(topicController.text.isEmpty){
+            Customdialog().showInSnackBar("Please enter title", context);
+          }
+         else if(imageUrl==null){
+           Customdialog().showInSnackBar("Please add image", context);
+          }
+          else if(imageUrl !=null&&topicController.text.isNotEmpty) {
+Customdialog.showDialogBox(context);
+            uploadImageToFirebase().then((value) {
+              firebaseFirestore.collection("topics").add({
+                "imageLink": imageLink,
+                "title": topicController.text.trim()
+              }).then((value) {
+                Navigator.pop(context);
+                Navigator.pop(context);
+                Customdialog().showInSnackBar("Added New Topic", context);
+              });
+            });
+          }        },
+        child: Icon(
+          Icons.check,
+        ),
+      ),
       backgroundColor: Colors.white,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-            Center(
+          Center(
+            child: InkWell(
+              onTap: addImage,
               child: CircleAvatar(
                 backgroundColor: Colors.green,
-                child:  CircleAvatar( 
+                child:imageUrl==null? CircleAvatar(
                   radius: 70,
-                  backgroundImage: AssetImage('assets/add.png'),),
+                  backgroundImage: AssetImage('assets/add.png'),
+                ):CircleAvatar(
+                  radius: 70,
+                  backgroundImage: FileImage(imageUrl!),
+                ),
                 radius: 72,
-               
               ),
             ),
-            SizedBox(
-              height: 10,
-            ),
-            Container(
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Container(
               height: 60,
               margin: EdgeInsets.symmetric(horizontal: 30),
 
@@ -57,6 +104,7 @@ class _AddTopicState extends State<AddTopic> {
                 // border: Border.all(color: Colors.grey,width: 0.5)
               ),
               child: TextFormField(
+                controller: topicController,
                 //  textAlign: TextAlign.start,
                 decoration: InputDecoration(
                   hintText: ' Enter Topic',
@@ -81,5 +129,24 @@ class _AddTopicState extends State<AddTopic> {
         ],
       ),
     );
+  }
+
+  Future uploadImageToFirebase() async {
+    File? fileName = imageUrl;
+    var uuid = Uuid();
+    firebase_storage.Reference firebaseStorageRef = firebase_storage
+        .FirebaseStorage.instance
+        .ref()
+        .child('cetagory/images+${uuid.v4()}');
+    firebase_storage.UploadTask uploadTask =
+        firebaseStorageRef.putFile(fileName!);
+    firebase_storage.TaskSnapshot taskSnapshot =
+        await uploadTask.whenComplete(() async {
+      print(fileName);
+      String img = await uploadTask.snapshot.ref.getDownloadURL();
+      setState(() {
+        imageLink = img;
+      });
+    });
   }
 }
