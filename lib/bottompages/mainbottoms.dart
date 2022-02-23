@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:prayerappadmin/BottomPagesclass/payment.dart';
 import 'package:prayerappadmin/BottomPagesclass/question.dart';
+import 'package:prayerappadmin/bottompages/notifications.dart';
 
 class MainBottom extends StatefulWidget {
      PageController? pageController;
@@ -59,7 +60,7 @@ class _MainBottomState extends State<MainBottom> {
             backgroundColor: Colors.green),
         BottomNavigationBarItem(
             icon: Icon(
-              Icons.favorite,
+              Icons.notifications,
               color: _pages == 3 ? Colors.green : Colors.black,
             ),
             label: '',
@@ -71,7 +72,7 @@ class _MainBottomState extends State<MainBottom> {
           Payment(),
           Questions(),
           Payment(),
-          Payment(),
+          Notifications(),
         ],
         controller: widget.pageController,
         onPageChanged: onPageChanged,
