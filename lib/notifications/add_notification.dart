@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:prayerappadmin/utils/constant.dart';
+import 'package:prayerappadmin/widgets/customdialog.dart';
 
 class AddNotification extends StatefulWidget {
   const AddNotification({ Key? key }) : super(key: key);
@@ -74,7 +76,26 @@ class _AddNotificationState extends State<AddNotification> {
               
                 
               
-              onPressed: () {  },
+              onPressed: () {
+                if(notificationController.text.isEmpty){}else{
+                  try{
+                    Customdialog.showDialogBox(context);
+                    firebaseFirestore.collection("notifications").add({
+                      "content":notificationController.text,
+                      "time":DateTime.now()
+                    }).whenComplete(() {
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                      Customdialog().showInSnackBar("Notification Added", context);
+                    }).catchError((e){
+                      throw e;
+                    });
+                  }catch(e){
+                    Navigator.pop(context);
+                    Customdialog.showBox(context, e.toString());
+                  }
+                }
+              },
               child:Text(
                 'Add',
                 style: TextStyle(fontSize: 20),
