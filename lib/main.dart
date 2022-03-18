@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:prayerappadmin/bottompages/mainbottomclass.dart';
+import 'package:prayerappadmin/bottompages/mainbottoms.dart';
 import 'package:prayerappadmin/providers/idprovider.dart';
 import 'package:provider/provider.dart';
 
@@ -30,7 +31,7 @@ colorScheme: ColorScheme.fromSwatch().copyWith(
   secondary: Color(0xff00722d)
 )
         ),
-        home: const MainBottomClass()
+        home:  MainBottomClass()
       ),
     );
   }

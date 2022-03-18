@@ -33,8 +33,7 @@ class _MainBottomClassState extends State<MainBottomClass> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: Column(
+      body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -156,7 +155,7 @@ class _MainBottomClassState extends State<MainBottomClass> {
             ),
           ],
         ),
-      ),
+      
     );
   }
 }
