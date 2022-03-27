@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:prayerappadmin/providers/idprovider.dart';
@@ -73,8 +74,39 @@ class _QuestionsState extends State<Questions> {
                                     child: CircleAvatar(
                                       backgroundColor: Colors.white,
                                       radius: 50,
-                                      backgroundImage:
-                                          NetworkImage(ds['imageLink']),
+                                      // backgroundImage:
+                                      //     NetworkImage(ds['imageLink']),
+                                  child: CachedNetworkImage(
+                                    imageUrl: ds['imageLink'],
+                                    imageBuilder: (context,
+                                        imageProvider) =>
+                                        Container(
+                                          decoration:
+                                          BoxDecoration(
+                                            shape:
+                                            BoxShape.circle,
+                                            image:
+                                            DecorationImage(
+                                              image:
+                                              imageProvider,
+                                              fit: BoxFit.fill,
+                                            ),
+                                          ),
+                                        ),
+                                    placeholder: (context,
+                                        url) =>
+                                        Center(
+                                            child: CircleAvatar(
+                                              radius: 43,
+                                              backgroundColor: Colors.white,
+                                              backgroundImage: AssetImage("assets/infinity.gif"),
+                                            )),
+                                    errorWidget: (context,
+                                        url, error) =>
+                                        Center(
+                                            child: Icon(
+                                                Icons.error)),
+                                  ),
                                     ),
                                   ),
                                 ),
